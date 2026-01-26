@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Sistema de agendamiento de citas psicológicas - Cooperativa Urbanos Pereira" />
+  <meta name="theme-color" content="#22c55e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Psicóloga App" />
+  <title>Agendamiento Psicológico - Cooperativa Urbanos Pereira</title>
+  <link rel="icon" type="image/png" href="cooperativa urbanos.png" />
+  <link rel="apple-touch-icon" href="cooperativa urbanos.png" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="top-bar">
+      <div class="brand">
+        <img src="cooperativa urbanos.png" alt="Logo Cooperativa Urbanos Pereira" class="logo" />
+        <div class="brand-text">
+          <span class="coop-name">COOPERATIVA URBANOS PEREIRA</span>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span id="user-display" class="user-display hidden"></span>
+        <!-- Botones de perfil y cerrar sesión removidos -->
+        <button id="refresh-btn" class="refresh-btn" type="button" aria-label="Recargar página">
+          ↻
+        </button>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema a oscuro">
+          <!-- icono manejado por CSS -->
+        </button>
+      </div>
+    </header>
+
+    <!-- Overlay de autenticación (login / registro) -->
+    <div id="auth-overlay" class="auth-overlay">
+      <div class="auth-card">
+        <div class="auth-header-row">
+          <h2 class="auth-title">Bienvenido</h2>
+          <button type="button" class="theme-toggle auth-theme-toggle" aria-label="Cambiar tema">
+            <!-- icono manejado por CSS -->
+          </button>
+        </div>
+        <p class="auth-subtitle">
+          Inicia sesión o crea tu cuenta para agendar una cita con la psicóloga.
+        </p>
+
+        <!-- Tabs removidos - solo login -->
+
+        <form id="login-form" class="auth-form">
+          <div class="auth-field-group">
+            <label for="login-name">Nombre completo</label>
+            <input id="login-name" type="text" autocomplete="name" required />
+          </div>
+          <div class="auth-field-group">
+            <label for="login-id-number">Número de identificación</label>
+            <input id="login-id-number" type="text" autocomplete="off" required />
+          </div>
+          <div class="auth-field-group auth-privacy">
+            <label class="privacy-label">
+              <input id="login-privacy" type="checkbox" required />
+              <span>Acepto que mis datos están seguros y protegidos. Entiendo que esta información se usa únicamente para gestionar mis citas con la psicóloga.</span>
+            </label>
+          </div>
+          <button type="submit" class="btn btn-primary auth-submit">Iniciar sesión</button>
+        </form>
+      </div>
+    </div>
+
+    <main class="main">
+      <section class="welcome-section hero-section" id="welcome-paciente">
+        <div class="hero-text">
+          <h1 class="hero-title">Te damos la bienvenida al Círculo de Apoyo</h1>
+          <p>
+            Te damos la bienvenida al Círculo de Apoyo, un espacio creado pensando en ti, en tu bienestar y en la importancia de sentirte escuchado(a).
+            Aquí encontrarás un lugar seguro, confidencial y respetuoso, donde podrás expresar lo que estás viviendo, compartir inquietudes, emociones o situaciones que impactan tu día a día, tanto en el ámbito laboral como personal. Este no es un espacio de terapia, sino un espacio de escucha activa, acompañamiento y orientación, donde tu voz tiene valor y tu experiencia importa.
+          </p>
+          <p>
+            Creemos firmemente que hablar, ser escuchado(a) sin juicios y encontrar comprensión puede marcar una gran diferencia. Por eso, este círculo nace como una red de apoyo, para acompañarte, fortalecer tus recursos personales y promover el autocuidado y el bienestar emocional.
+          </p>
+          <p class="welcome-cta"><strong>Gracias por permitirte este momento para ti. No estás solo(a).</strong></p>
+        </div>
+        <div class="hero-visual hero-visual-paciente"></div>
+      </section>
+
+      <section class="welcome-section hero-section hidden" id="welcome-admin">
+        <div class="hero-text">
+          <h1 class="hero-title">Organiza tu agenda con tranquilidad</h1>
+          <p>
+            Desde aquí podrás organizar tu agenda, confirmar o rechazar solicitudes de cita
+            y deshabilitar días en los que no estés disponible.
+          </p>
+          <p>
+            El calendario refleja en tiempo real las citas pedidas por los usuarios
+            y te ayuda a mantener un orden claro y amable con tu tiempo y el de tus pacientes.
+          </p>
+        </div>
+        <div class="hero-visual hero-visual-admin"></div>
+      </section>
+
+      <section class="profile-section">
+        <div class="profile-card">
+          <div class="profile-avatar">
+            <div class="avatar-circle">P</div>
+          </div>
+          <div class="profile-info">
+            <h2>Psicóloga Valentina</h2>
+            <p class="profile-role">Psicóloga Clínica - Cooperativa Urbanos Pereira</p>
+            <p class="profile-desc">
+              Mi nombre es Valentina Ordoñez Castaño, psicóloga con enfoque psicosocial, y estaré acompañándote en este espacio de escucha.
+              Mi labor dentro de este círculo es ofrecerte un acompañamiento respetuoso, empático y confidencial, brindándote un espacio donde puedas expresarte con libertad y confianza.
+              Quiero recordarte que este espacio no sustituye procesos terapéuticos, sino que busca ser un apoyo cercano, humano y oportuno cuando sientas la necesidad de hablar y ser escuchado(a).
+            </p>
+            <p class="profile-contact">
+              Teléfono: <a href="tel:3105667996">310 5667996</a> ·
+              Correo: <a href="mailto:valentina@coopurbanospereira.com">valentina@coopurbanospereira.com</a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="calendar-layout">
+        <div class="calendar-card">
+          <div class="calendar-header">
+            <button id="prev-month" class="nav-month" aria-label="Mes anterior">&lt;</button>
+            <div class="month-label" id="month-label">Mes Año</div>
+            <button id="next-month" class="nav-month" aria-label="Mes siguiente">&gt;</button>
+          </div>
+          <div class="calendar-legend">
+            <span><span class="legend-box today"></span> Día actual</span>
+            <span><span class="legend-box disabled"></span> Día deshabilitado</span>
+            <span><span class="legend-box" style="background: #ffd633;"></span> Cita pendiente</span>
+            <span><span class="legend-box" style="background: #22c55e;"></span> Cita confirmada</span>
+          </div>
+          <div class="calendar-grid" id="calendar-grid">
+            <!-- Calendario generado por JavaScript -->
+          </div>
+        </div>
+
+        <div class="side-panel">
+          <div id="panel-paciente" class="panel-grid">
+            <!-- Columna 1: Agendar cita -->
+            <div class="panel-col">
+              <h2>Agendar cita</h2>
+              <p class="side-panel-text">
+                Selecciona un día en el calendario para ver los horarios disponibles
+                entre <strong>8:00 a.m. - 11:30 a.m.</strong> y <strong>2:00 p.m. - 4:00 p.m.</strong>
+              </p>
+              <div class="selected-day" id="selected-day-text">Ningún día seleccionado</div>
+              <div class="time-slots" id="time-slots">
+                <!-- Horarios para el paciente -->
+              </div>
+            </div>
+
+            <!-- Columna 2: Mis citas -->
+            <div class="panel-col">
+              <h3>Mis citas</h3>
+              <div class="appointments-list" id="patient-appointments">
+                <!-- Lista de citas del paciente -->
+              </div>
+            </div>
+
+            <!-- Columna 3: Notificaciones usuario -->
+            <div class="panel-col">
+              <h3>Notificaciones</h3>
+              <div class="notifications-list" id="patient-notifications">
+                <!-- Notificaciones al paciente -->
+              </div>
+            </div>
+          </div>
+
+          <div id="panel-admin" class="panel-grid hidden">
+            <!-- Columna 1: Gestión del día + horas -->
+            <div class="panel-col">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="margin: 0;">Gestión del día seleccionado</h2>
+                <button id="manage-users-btn" class="btn" style="background: #3b82f6; color: white; padding: 0.5rem 1rem; font-size: 0.85rem;">
+                  Gestionar usuarios
+                </button>
+              </div>
+              <p class="side-panel-text">
+                Selecciona un día en el calendario para ver y gestionar las citas.
+              </p>
+              <div class="selected-day" id="admin-selected-day-text">Ningún día seleccionado</div>
+              <button id="toggle-day" class="btn-toggle-day" disabled>
+                Deshabilitar día completo
+              </button>
+
+              <h3>Horas del día</h3>
+              <p class="side-panel-text side-panel-text-small">
+                Haz clic en una hora para deshabilitarla o habilitarla. Las horas deshabilitadas
+                aparecerán en gris para los usuarios.
+              </p>
+              <div class="time-slots admin-time-slots" id="admin-time-slots">
+                <!-- Horas administrables por la psicóloga -->
+              </div>
+            </div>
+
+            <!-- Columna 2: Citas de este día -->
+            <div class="panel-col">
+              <h3>Citas de este día</h3>
+              <div class="appointments-list" id="admin-appointments">
+                <!-- Lista de citas para la administradora -->
+              </div>
+            </div>
+
+            <!-- Columna 3: Notificaciones psicóloga -->
+            <div class="panel-col">
+              <h3>Notificaciones</h3>
+              <div class="notifications-list" id="admin-notifications">
+                <!-- Notificaciones para la psicóloga -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="loading-overlay" class="loading-overlay hidden">
+    <div class="loading-content">
+      <img src="cooperativa urbanos.png" alt="Logo Cooperativa Urbanos Pereira" class="loading-logo" />
+      <div class="loading-text">Cargando...</div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <div id="modal-backdrop" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-title">Agendar cita</h2>
+        <button id="modal-close" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Contenido dinámico del modal -->
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Registrar Service Worker para PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then((registration) => {
+            console.log('Service Worker registrado exitosamente:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('Error al registrar Service Worker:', error);
+          });
+      });
+    }
+
+    // Detectar si la app está instalada y mostrar botón de instalación
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevenir el prompt automático
+      e.preventDefault();
+      // Guardar el evento para usarlo después
+      deferredPrompt = e;
+      // Mostrar botón de instalación personalizado (opcional)
+      console.log('La app se puede instalar');
+    });
+
+    // Función para instalar la app manualmente (opcional)
+    window.installApp = async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('Resultado de la instalación:', outcome);
+        deferredPrompt = null;
+      }
+    };
+  </script>
+</body>
+</html>
+
+
