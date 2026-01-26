@@ -34,14 +34,21 @@ Configura estos valores:
 - **Root Directory**: (dejar vacío, el código está en la raíz)
 - **Build Command**: `cd backend && npm install`
 - **Start Command**: `cd backend && node server.js`
-- **Plan**: `Starter` ($7/mes) - **IMPORTANTE**: Selecciona Starter para que no se duerma
+- **Plan**: `Free` (por ahora) - ⚠️ **NOTA**: Puedes empezar con Free y actualizar a Starter después. El plan Free se duerme después de 15 minutos de inactividad y NO soporta disco persistente.
 
 ### 1.4 Variables de Entorno
 En la sección **"Environment"**, agrega:
 - `NODE_ENV`: `production`
 - `PORT`: `4000` (opcional, Render lo asigna automáticamente)
 
-### 1.5 Crear el Disco Persistente
+### 1.5 Crear el Disco Persistente (Solo con Plan Starter)
+⚠️ **IMPORTANTE**: El disco persistente solo está disponible con el plan Starter o superior.
+
+**Si estás usando el plan Free por ahora:**
+- ⚠️ Los datos se pueden perder cuando el servicio se reinicie o se duerma
+- Puedes actualizar a Starter más tarde para habilitar el disco persistente
+
+**Si ya tienes el plan Starter:**
 1. Una vez creado el servicio, ve a la pestaña **"Disk"**
 2. Click en **"Create Disk"**
 3. Configuración:
@@ -50,12 +57,12 @@ En la sección **"Environment"**, agrega:
    - **Size**: `1 GB` (suficiente para SQLite)
 4. Click en **"Create"**
 
-### 1.6 Configurar Variable de Entorno para el Disco
-1. Ve a **"Environment"** del servicio
-2. Agrega:
-   - **Key**: `DATABASE_PATH`
-   - **Value**: `/data`
-3. Guarda los cambios
+5. Configurar Variable de Entorno para el Disco:
+   - Ve a **"Environment"** del servicio
+   - Agrega:
+     - **Key**: `DATABASE_PATH`
+     - **Value**: `/data`
+   - Guarda los cambios
 
 ### 1.7 Esperar el Deploy
 - Render comenzará a construir y desplegar
@@ -152,8 +159,24 @@ git push
 
 ## 📝 Notas Importantes
 
-- **Plan Starter**: Necesario para que el servicio no se duerma y para usar disco persistente
-- **Disco Persistente**: Los datos se guardarán en `/data` y no se borrarán en cada deploy
+### Plan Free (Actual)
+- ⚠️ **Se duerme después de 15 minutos de inactividad** - La primera petición después de dormirse puede tardar 30-60 segundos
+- ⚠️ **NO soporta disco persistente** - Los datos pueden perderse cuando el servicio se reinicia
+- ✅ **Gratis** - Perfecto para pruebas y desarrollo
+
+### Plan Starter (Recomendado para Producción)
+- ✅ **Servidor siempre activo** - No se duerme
+- ✅ **Soporta disco persistente** - Los datos se guardan permanentemente
+- ✅ **$7/mes** - Costo razonable para producción
+
+### Actualizar de Free a Starter
+1. Ve a tu servicio en Render
+2. Click en **"Settings"** → **"Plan"** (o busca "Instance Type")
+3. Selecciona **"Starter"**
+4. Guarda los cambios
+5. Luego puedes crear el disco persistente (ver Paso 1.5)
+
+### Otras Notas
 - **Auto-Deploy**: Render actualizará automáticamente cuando hagas `git push`
 - **URLs**: Las URLs no cambian después del primer deploy, así que puedes generar el QR una vez que todo esté funcionando
 
