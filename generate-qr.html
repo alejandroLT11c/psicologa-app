@@ -111,19 +111,22 @@
     </p>
     
     <div class="input-group">
-      <label for="url-input">URL de la aplicación:</label>
+      <label for="url-input">URL base de la aplicación:</label>
       <input 
         type="url" 
         id="url-input" 
-        placeholder="https://psicologa-frontend.onrender.com"
-        value=""
+        placeholder="https://psicologa-system.onrender.com"
+        value="https://psicologa-system.onrender.com"
       />
     </div>
     
-    <button onclick="generateQR()">Generar Código QR</button>
+    <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+      <button onclick="generateQR('user')" style="flex: 1; background: #48bb78;">Generar QR Usuario</button>
+      <button onclick="generateQR('admin')" style="flex: 1; background: #ed8936;">Generar QR Admin</button>
+    </div>
     
     <div id="qr-container">
-      <h2 style="margin-bottom: 1rem; color: #2d3748;">Tu código QR está listo</h2>
+      <h2 style="margin-bottom: 1rem; color: #2d3748;" id="qr-title">Tu código QR está listo</h2>
       <canvas id="qr-code"></canvas>
       <button class="download-btn" onclick="downloadQR()">Descargar QR como imagen</button>
     </div>
@@ -135,21 +138,37 @@
 
   <script>
     let currentQRDataURL = null;
+    let currentQRType = null;
 
-    async function generateQR() {
-      const url = document.getElementById('url-input').value.trim();
+    async function generateQR(type) {
+      const baseUrl = document.getElementById('url-input').value.trim();
       
-      if (!url) {
+      if (!baseUrl) {
         alert('Por favor, ingresa una URL válida');
         return;
       }
 
       // Validar que sea una URL válida
+      let url;
       try {
+        const base = new URL(baseUrl);
+        if (type === 'admin') {
+          url = baseUrl + '?admin=true';
+        } else {
+          url = baseUrl;
+        }
         new URL(url);
       } catch (e) {
         alert('Por favor, ingresa una URL válida (debe comenzar con http:// o https://)');
         return;
+      }
+
+      currentQRType = type;
+      const title = document.getElementById('qr-title');
+      if (type === 'admin') {
+        title.textContent = '🔴 Código QR de Administrador';
+      } else {
+        title.textContent = '🔵 Código QR de Usuario';
       }
 
       const canvas = document.getElementById('qr-code');
@@ -249,9 +268,11 @@
         return;
       }
 
-      const url = document.getElementById('url-input').value.trim();
       const link = document.createElement('a');
-      link.download = 'codigo-qr-psicologa.png';
+      const filename = currentQRType === 'admin' 
+        ? 'codigo-qr-admin.png' 
+        : 'codigo-qr-usuario.png';
+      link.download = filename;
       link.href = currentQRDataURL;
       link.click();
     }
