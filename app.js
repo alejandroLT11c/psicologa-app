@@ -1111,15 +1111,12 @@ function openProfileModal() {
 
 // Función específica para editar perfil de la psicóloga (solo admin)
 function openPsychologistProfileModal() {
-  console.log("openPsychologistProfileModal llamado", { isAdminMode, currentUser });
-  if (!isAdminMode || !currentUser || currentUser.role !== 'admin') {
-    console.log("No se puede abrir: condiciones no cumplidas");
-    return;
-  }
+  if (!isAdminMode || !currentUser || currentUser.role !== 'admin') return;
 
   const backdrop = document.getElementById("modal-backdrop");
   const title = document.getElementById("modal-title");
   const body = document.getElementById("modal-body");
+  if (!backdrop || !title || !body) return;
 
   title.textContent = "Editar Perfil de la Psicóloga";
   body.innerHTML = "";
@@ -1967,56 +1964,44 @@ async function onUserAuthenticated(user, storage = "local") {
   setupLiquidCursorEffect();
 }
 
+// Delegación de eventos: un solo listener en document para el nombre de la psicóloga
 function setupPsychologistProfileClick() {
+  // Remover listener anterior si existe (evitar duplicados)
+  document.removeEventListener("click", onDocumentClickPsychologistName);
+  document.addEventListener("click", onDocumentClickPsychologistName);
+
+  // Actualizar estilos del elemento si existe
   const psychologistNameEl = document.getElementById("psychologist-name");
-  if (!psychologistNameEl) {
-    console.log("Elemento psychologist-name no encontrado, reintentando...");
-    // Si el elemento no existe aún, intentar de nuevo después de un breve delay
-    setTimeout(setupPsychologistProfileClick, 200);
-    return;
+  if (psychologistNameEl) {
+    if (isAdminMode && currentUser && currentUser.role === 'admin') {
+      psychologistNameEl.style.cursor = 'pointer';
+      psychologistNameEl.style.textDecoration = 'underline';
+      psychologistNameEl.style.textDecorationStyle = 'dotted';
+      psychologistNameEl.style.color = '#22c55e';
+      psychologistNameEl.title = 'Click para editar perfil';
+    } else {
+      psychologistNameEl.style.cursor = 'default';
+      psychologistNameEl.style.textDecoration = 'none';
+      psychologistNameEl.style.color = '';
+      psychologistNameEl.title = '';
+    }
   }
-  
-  console.log("Configurando click en nombre de psicóloga", { 
-    isAdminMode, 
-    currentUser: currentUser ? { role: currentUser.role } : null,
-    elementFound: !!psychologistNameEl 
-  });
-  
-  // Solo hacer clickeable en modo admin cuando hay usuario autenticado
-  if (isAdminMode && currentUser && currentUser.role === 'admin') {
-    // Clonar el elemento para remover listeners anteriores
-    const newEl = psychologistNameEl.cloneNode(true);
-    psychologistNameEl.parentNode.replaceChild(newEl, psychologistNameEl);
-    
-    // Configurar estilos visuales
-    newEl.style.cursor = 'pointer';
-    newEl.style.textDecoration = 'underline';
-    newEl.style.textDecorationStyle = 'dotted';
-    newEl.style.color = '#22c55e'; // Verde para indicar que es clickeable
-    newEl.title = 'Click para editar perfil';
-    
-    // Agregar el evento directamente al elemento
-    newEl.addEventListener("click", function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      console.log("✅ Click en nombre de psicóloga detectado!");
-      openPsychologistProfileModal();
-    });
-    
-    // También agregar evento de hover para feedback visual
-    newEl.addEventListener("mouseenter", function() {
-      this.style.opacity = '0.8';
-    });
-    newEl.addEventListener("mouseleave", function() {
-      this.style.opacity = '1';
-    });
-    
-    console.log("✅ Evento configurado correctamente en el elemento");
-  } else {
-    psychologistNameEl.style.cursor = 'default';
-    psychologistNameEl.style.textDecoration = 'none';
-    psychologistNameEl.style.color = '';
-    psychologistNameEl.title = '';
+}
+
+function onDocumentClickPsychologistName(e) {
+  // Solo en modo admin y con usuario admin
+  if (!isAdminMode || !currentUser || currentUser.role !== 'admin') return;
+  // Verificar si el click fue en el h2 con id psychologist-name (el de la tarjeta de perfil, no el del header)
+  const target = e.target;
+  const psychologistNameEl = document.getElementById("psychologist-name");
+  if (!psychologistNameEl) return;
+  // Asegurarnos de que el click sea en el nombre de la SECCIÓN DE PERFIL (profile-section), no en el user-display del header
+  const profileSection = document.querySelector(".profile-section");
+  if (!profileSection || !profileSection.contains(target)) return;
+  if (target.id === "psychologist-name" || target.closest("#psychologist-name")) {
+    e.preventDefault();
+    e.stopPropagation();
+    openPsychologistProfileModal();
   }
 }
 
